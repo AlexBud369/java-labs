@@ -1,3 +1,5 @@
+package src;
+
 public class Task1 {
 
     /*
@@ -10,7 +12,7 @@ public class Task1 {
         GetOperations();
     }
 
-    public static void GetOperations(){
+    public static void GetOperations() {
         int x = 9;
         int y = 3;
 
