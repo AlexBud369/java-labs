@@ -8,10 +8,10 @@ public class Task1{
 
     public static void main(String[] args) {
 
-        int dayNumber = GetNumber("Введите номер дня недели");
+        int dayNumber = getNumber("Введите номер дня недели");
 
         while (dayNumber > 7 || dayNumber < 1) {
-            dayNumber = GetNumber("Введите номер дня недели");
+            dayNumber = getNumber("Введите номер дня недели");
         }
 
         switch (dayNumber) {
@@ -39,7 +39,7 @@ public class Task1{
         }
     }
 
-    public static int GetNumber(String prompt) {
+    public static int getNumber(String prompt) {
         Scanner in = new Scanner(System.in);
         System.out.println(prompt);
         int value = in.nextInt();

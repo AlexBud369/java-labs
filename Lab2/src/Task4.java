@@ -1,19 +1,18 @@
 import java.util.Scanner;
 
 public class Task4 {
+
+    /*Дана точка на плоскости заданная координатами x и y,
+       определить и вывести в консоль, в какой четверти
+       находится точка, в прямоугольной (декартовой) системе координат.
+        Четверти обозначены римскими цифрами.
+        */
+
     public static void main(String[] args) {
-         /*Дана точка на плоскости заданная координатами x и y,
-        определить и вывести в консоль, в какой четверти
-        находится точка, в прямоугольной (декартовой) системе координат.
-         Четверти обозначены римскими цифрами.
-         */
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Введите координату x: ");
-        double x = scanner.nextDouble();
+        double x =  getDigit("Введите координату x: ");
 
-        System.out.print("Введите координату y: ");
-        double y = scanner.nextDouble();
+        double y =  getDigit("Введите координату y: );
 
         if (x == 0 && y == 0) {
             System.out.println("Точка находится в начале координат");
@@ -33,6 +32,14 @@ public class Task4 {
             }
         }
 
+    }
+
+    public static double getDigit(String promt) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print(promt);
+        double value = scanner.nextDouble();
         scanner.close();
+
+        return value;
     }
 }

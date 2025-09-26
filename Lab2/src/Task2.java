@@ -7,10 +7,8 @@ public class Task2 {
      */
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Введите время (0-24 часа): ");
-        int hour = scanner.nextInt();
+        int hour = getDigitInput("Введите время (0-24 часа): ");
 
         if (hour >= 0 && hour <= 24) {
             String greeting = getGreeting(hour);
@@ -18,8 +16,15 @@ public class Task2 {
         } else {
             System.out.println("Некорректное время!");
         }
+    }
 
+    public static int getDigitInput(String promt) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print(promt);
+        int value = scanner.nextInt();
         scanner.close();
+        return value;
     }
 
     public static String getGreeting(int hour) {
