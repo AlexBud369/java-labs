@@ -14,11 +14,10 @@ public class Task5 {
 
         int month = getDigit("Введите месяц рождения (1-12): ");
 
-        int year = getDigit("Введите год рождения (например, 1990): ");
+        int year = getDigit("Введите год рождения (например, 1970): ");
 
-        if (year < 1900) {
-            System.out.println("ты не такой старый");
-            return;
+        while (year < 1900) {
+            year = getDigit("Недопустимый год. Введите заново: ");
         }
 
         String zodiacSign = getZodiacSign(day, month);
@@ -32,7 +31,7 @@ public class Task5 {
     public static int getDigit(String promt) {
         Scanner scanner = new Scanner(System.in);
         System.out.print(promt);
-        int value = scanner.nextInteger();
+        int value = scanner.nextInt();
         scanner.close();
 
         return value;

@@ -11,38 +11,28 @@ public class Task6 {
 
     public static void main(String[] args) {
 
-        char inputValue = getInput("Введите символ");
-        while (inputValue.length() != 1) {
-            inputValue = getInput("Введите символ");
+        Scanner scanner = new Scanner(System.in);
+
+        String inputValue;
+        do {
+            System.out.println("Введите символ:");
+            inputValue = scanner.nextLine();
+        } while (inputValue.length() != 1);
+
+        scanner.close();
+
+        char ch = inputValue.charAt(0);
+
+        if (Character.isDigit(ch)) {
+            System.out.println("цифра");
+        } else if (Character.isLetter(ch)) {
+            if ((ch >= 'а' && ch <= 'я') || (ch >= 'А' && ch <= 'Я') || ch == 'ё' || ch == 'Ё') {
+                System.out.println("кириллица");
+            } else {
+                System.out.println("латиница");
+            }
+        } else {
+            System.out.println("невозможно определить");
         }
-
-        char ch = input.charAt(0);
-
-        switch (ch) {
-            case Character.isDigit(ch):
-                System.out.println("цифра");
-                break;
-            case Character.isLetter(ch):
-                switch (ch){
-                    case ch >= 'а' && ch <= 'я' || ch >= 'А' && ch <= 'Я':
-                        System.out.println("кириллица");
-                        break;
-                    default:
-                        System.out.println("латиница");
-                }
-                break;
-            default:
-                System.out.println("не число и не буква");
-        }
-    }
-
-    public static String getInput(String prompt) {
-        Scanner in = new Scanner(System.in);
-        System.out.println(prompt);
-
-        String value = in.nextLine();
-        in.close();
-
-        return value;
     }
 }

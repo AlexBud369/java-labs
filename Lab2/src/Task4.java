@@ -12,7 +12,7 @@ public class Task4 {
 
         double x =  getDigit("Введите координату x: ");
 
-        double y =  getDigit("Введите координату y: );
+        double y =  getDigit("Введите координату y: ");
 
         if (x == 0 && y == 0) {
             System.out.println("Точка находится в начале координат");
