@@ -1,3 +1,4 @@
+import java.util.Scanner;
 public class Task4 {
     /*
     * Напишите программу, которая будет проверять, является ли число, введенное
@@ -27,11 +28,8 @@ public class Task4 {
 
         while (number > 0) {
             int digit = number % 10;
-            System.out.printf("Число ", number);
             reversedNumber = reversedNumber * 10 + digit;
-            System.out.printf("Число ", number);
             number /= 10;
-            System.out.printf("Число ", number);
         }
 
         return originalNumber == reversedNumber;

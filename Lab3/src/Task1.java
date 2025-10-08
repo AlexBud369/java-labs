@@ -6,7 +6,7 @@ public class Task1 {
     * Показать на экране все числа Фибоначчи в диапазоне от 0 до 10 000 000
     * */
 
-    public static main(String[] args) {
+    public static void main(String[] args) {
         int maxDigit = 10_000_000;
         int a = 0;
         int b = 1;

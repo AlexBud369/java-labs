@@ -6,10 +6,10 @@ public class Task2 {
     Написать программу, которая выводит на экран все простые числа в диапазоне от 2 до 1 000 000
 
     * */
-    public static main (String[] args) {
-        int a = 2;
-        int maxDiapason = 1000000;
-        for (a; a < maxDiapason; a++){
+    public static void main (String[] args) {
+
+        int maxDiapason = 1_000_000;
+        for (int a = 2; a < maxDiapason; a++){
             if (a % 1 == 0 && a % a == 0) {
                 System.out.println(a);
             }
