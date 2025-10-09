@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.util.Arrays;
+
 public class Task5 {
 
     /*
@@ -35,31 +37,17 @@ public class Task5 {
         String cleanStr1 = cleanString(str1);
         String cleanStr2 = cleanString(str2);
 
-        // Если длины разные - не анаграммы
-        if (cleanStr1.length() != cleanStr2.length()) {
-            return false;
-        }
+        char[] arr1 = cleanStr1.toCharArray();
+        char[] arr2 = cleanStr2.toCharArray();
 
-        int[] charCount = new int[26];
+        Arrays.sort(arr1);
+        Arrays.sort(arr2);
 
-        for (char ch : cleanStr1.toCharArray()) {
-            charCount[ch - 'a']++;
-        }
-
-        for (char ch : cleanStr2.toCharArray()) {
-            charCount[ch - 'a']--;
-        }
-
-        for (int count : charCount) {
-            if (count != 0) {
-                return false;
-            }
-        }
-
-        return true;
+        return Arrays.equals(arr1, arr2);
     }
 
     public static String cleanString(String str) {
+
         return str.replaceAll("[^a-zA-Zа-яА-Я]", "").toLowerCase();
     }
 }

@@ -10,13 +10,11 @@ public class Task3 {
         System.out.print("Введите предложение: ");
         String sentence = scanner.nextLine();
 
-        // Разбиваем на слова (учитываем знаки препинания)
         String[] words = sentence.split("[\\s\\p{Punct}]+");
 
         int totalLength = 0;
         int wordCount = 0;
 
-        // Считаем общую длину слов
         for (String word : words) {
             if (!word.isEmpty()) {
                 totalLength += word.length();
