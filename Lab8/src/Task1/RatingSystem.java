@@ -10,5 +10,4 @@ public interface RatingSystem {
     int getPlayerRating(String nickname, String game);
     List<String> getTopPlayersByGame(String game, int limit);
     List<String> getTopPlayersOverall(int limit);
-    boolean isNicknameTaken(String nickname);
 }
