@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class WarehouseSystem implements WarehouseManager {
-    private Map<String, Warehouse> warehouses;
-    private Map<String, Supplier> suppliers;
-    private Map<String, Product> products;
-    private List<Document> invoices;
-    private Map<String, Map<String, Integer>> inventory;
+    private final Map<String, Warehouse> warehouses;
+    private final Map<String, Supplier> suppliers;
+    private final Map<String, Product> products;
+    private final List<Document> invoices;
+    private final Map<String, Map<String, Integer>> inventory;
 
     public WarehouseSystem() {
         this.warehouses = new HashMap<>();
@@ -20,23 +20,51 @@ public class WarehouseSystem implements WarehouseManager {
 
     @Override
     public void addWarehouse(String name, String address) {
+        if (name == null || name.trim().isEmpty() || address == null || address.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название и адрес склада не могут быть пустыми");
+        }
         warehouses.put(name, new Warehouse(name, address));
         inventory.put(name, new HashMap<>());
     }
 
     @Override
     public void addSupplier(String name, String address, String phone) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название поставщика не может быть пустым");
+        }
         suppliers.put(name, new Supplier(name, address, phone));
     }
 
     @Override
     public void addProduct(String name, String unit, double price) {
+        if (name == null || name.trim().isEmpty() || unit == null || unit.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название и единица измерения товара не могут быть пустыми");
+        }
+        if (price <= 0) {
+            throw new IllegalArgumentException("Цена товара должна быть положительной");
+        }
         products.put(name, new Product(name, unit, price));
     }
 
     @Override
-    public Document createInvoice(String number, LocalDate date, String type) {
+    public Document createInvoice(String number, LocalDate date, String type,
+                                  String supplier, String fromWarehouse,
+                                  String toWarehouse, String basis) {
+        if (number == null || number.trim().isEmpty()) {
+            throw new IllegalArgumentException("Номер накладной не может быть пустым");
+        }
+        if (date == null) {
+            throw new IllegalArgumentException("Дата накладной не может быть пустой");
+        }
+        if (type == null || !Arrays.asList("ПРИХОД", "РАСХОД", "ПЕРЕМЕЩЕНИЕ").contains(type)) {
+            throw new IllegalArgumentException("Неверный тип накладной");
+        }
+
         Invoice invoice = new Invoice(number, date, type);
+        invoice.setSupplier(supplier);
+        invoice.setFromWarehouse(fromWarehouse);
+        invoice.setToWarehouse(toWarehouse);
+        invoice.setBasis(basis);
         invoices.add(invoice);
         return invoice;
     }
@@ -48,6 +76,8 @@ public class WarehouseSystem implements WarehouseManager {
         }
 
         try {
+            validateInvoice(invoice);
+
             switch (invoice.getType()) {
                 case "ПРИХОД":
                     return processIncoming(invoice);
@@ -61,6 +91,49 @@ public class WarehouseSystem implements WarehouseManager {
         } catch (Exception e) {
             System.out.println("Ошибка обработки накладной: " + e.getMessage());
             return false;
+        }
+    }
+
+    private void validateInvoice(Invoice invoice) {
+        if (invoice.getType().equals("ПРИХОД")) {
+            if (invoice.getToWarehouse() == null) {
+                throw new IllegalArgumentException("Для прихода необходимо указать склад назначения");
+            }
+            if (invoice.getSupplier() != null && !supplierExists(invoice.getSupplier())) {
+                throw new IllegalArgumentException("Поставщик не найден: " + invoice.getSupplier());
+            }
+        } else if (invoice.getType().equals("РАСХОД")) {
+            if (invoice.getFromWarehouse() == null) {
+                throw new IllegalArgumentException("Для расхода необходимо указать склад отгрузки");
+            }
+        } else if (invoice.getType().equals("ПЕРЕМЕЩЕНИЕ")) {
+            if (invoice.getFromWarehouse() == null || invoice.getToWarehouse() == null) {
+                throw new IllegalArgumentException("Для перемещения необходимо указать склад отгрузки и назначения");
+            }
+        }
+
+        Map<String, Integer> items = invoice.getItems();
+        if (items.isEmpty()) {
+            throw new IllegalArgumentException("Накладная не содержит товаров");
+        }
+
+        for (Map.Entry<String, Integer> entry : items.entrySet()) {
+            String product = entry.getKey();
+            int quantity = entry.getValue();
+
+            if (!productExists(product)) {
+                throw new IllegalArgumentException("Товар не найден: " + product);
+            }
+            if (quantity <= 0) {
+                throw new IllegalArgumentException("Количество товара должно быть положительным: " + product);
+            }
+        }
+
+        if (invoice.getFromWarehouse() != null && !warehouseExists(invoice.getFromWarehouse())) {
+            throw new IllegalArgumentException("Склад отгрузки не найден: " + invoice.getFromWarehouse());
+        }
+        if (invoice.getToWarehouse() != null && !warehouseExists(invoice.getToWarehouse())) {
+            throw new IllegalArgumentException("Склад назначения не найден: " + invoice.getToWarehouse());
         }
     }
 
@@ -86,21 +159,58 @@ public class WarehouseSystem implements WarehouseManager {
             int current = warehouseInventory.getOrDefault(product, 0);
 
             if (current < quantity) {
-                throw new IllegalArgumentException("Недостаточно товара: " + product);
+                throw new IllegalArgumentException("Недостаточно товара: " + product +
+                        " (доступно: " + current + ", требуется: " + quantity + ")");
             }
-            warehouseInventory.put(product, current - quantity);
+
+            int newQuantity = current - quantity;
+            if (newQuantity == 0) {
+                warehouseInventory.remove(product);
+            } else {
+                warehouseInventory.put(product, newQuantity);
+            }
         }
         return true;
     }
 
     private boolean processTransfer(Invoice invoice) {
-        if (!processOutgoing(invoice)) return false;
+        String fromWarehouse = invoice.getFromWarehouse();
+        String toWarehouse = invoice.getToWarehouse();
 
-        // Создаем временную накладную для прихода
-        Invoice tempInvoice = new Invoice(invoice.getNumber(), invoice.getDate(), "ПРИХОД");
-        tempInvoice.setToWarehouse(invoice.getToWarehouse());
-        tempInvoice.getItems().putAll(invoice.getItems());
-        return processIncoming(tempInvoice);
+        if (fromWarehouse.equals(toWarehouse)) {
+            throw new IllegalArgumentException("Перемещение на тот же склад невозможно");
+        }
+
+        Map<String, Integer> items = invoice.getItems();
+        for (Map.Entry<String, Integer> entry : items.entrySet()) {
+            String product = entry.getKey();
+            int quantity = entry.getValue();
+
+            if (!hasEnoughProduct(fromWarehouse, product, quantity)) {
+                throw new IllegalArgumentException("Недостаточно товара на складе " + fromWarehouse +
+                        ": " + product + " (требуется: " + quantity + ")");
+            }
+        }
+
+        for (Map.Entry<String, Integer> entry : items.entrySet()) {
+            String product = entry.getKey();
+            int quantity = entry.getValue();
+
+            Map<String, Integer> fromInventory = inventory.get(fromWarehouse);
+            Map<String, Integer> toInventory = inventory.get(toWarehouse);
+
+            int fromCurrent = fromInventory.getOrDefault(product, 0);
+            int fromNewQuantity = fromCurrent - quantity;
+            if (fromNewQuantity == 0) {
+                fromInventory.remove(product);
+            } else {
+                fromInventory.put(product, fromNewQuantity);
+            }
+
+            toInventory.put(product, toInventory.getOrDefault(product, 0) + quantity);
+        }
+
+        return true;
     }
 
     @Override
@@ -117,15 +227,24 @@ public class WarehouseSystem implements WarehouseManager {
     }
 
     @Override
-    public Map<String, Integer> searchProduct(String productName) {
-        Map<String, Integer> result = new HashMap<>();
-        inventory.forEach((warehouse, items) -> {
-            items.forEach((product, quantity) -> {
+    public Map<String, Map<String, Integer>> searchProduct(String productName) {
+        Map<String, Map<String, Integer>> result = new HashMap<>();
+
+        for (Map.Entry<String, Map<String, Integer>> warehouseEntry : inventory.entrySet()) {
+            String warehouse = warehouseEntry.getKey();
+            Map<String, Integer> items = warehouseEntry.getValue();
+
+            for (Map.Entry<String, Integer> productEntry : items.entrySet()) {
+                String product = productEntry.getKey();
+                int quantity = productEntry.getValue();
+
                 if (product.toLowerCase().contains(productName.toLowerCase())) {
-                    result.put(warehouse, result.getOrDefault(warehouse, 0) + quantity);
+                    result.computeIfAbsent(warehouse, k -> new HashMap<>())
+                            .put(product, quantity);
                 }
-            });
-        });
+            }
+        }
+
         return result;
     }
 
@@ -144,10 +263,18 @@ public class WarehouseSystem implements WarehouseManager {
         return products.containsKey(name);
     }
 
-    // Внутренние классы
+    @Override
+    public boolean hasEnoughProduct(String warehouse, String product, int quantity) {
+        if (!warehouseExists(warehouse) || !productExists(product)) {
+            return false;
+        }
+        Map<String, Integer> warehouseInventory = inventory.get(warehouse);
+        return warehouseInventory.getOrDefault(product, 0) >= quantity;
+    }
+
     private static class Warehouse {
-        private String name;
-        private String address;
+        private final String name;
+        private final String address;
 
         public Warehouse(String name, String address) {
             this.name = name;
@@ -156,9 +283,9 @@ public class WarehouseSystem implements WarehouseManager {
     }
 
     private static class Supplier {
-        private String name;
-        private String address;
-        private String phone;
+        private final String name;
+        private final String address;
+        private final String phone;
 
         public Supplier(String name, String address, String phone) {
             this.name = name;
@@ -168,9 +295,9 @@ public class WarehouseSystem implements WarehouseManager {
     }
 
     private static class Product {
-        private String name;
-        private String unit;
-        private double price;
+        private final String name;
+        private final String unit;
+        private final double price;
 
         public Product(String name, String unit, double price) {
             this.name = name;
@@ -179,16 +306,15 @@ public class WarehouseSystem implements WarehouseManager {
         }
     }
 
-    // Класс Invoice реализует интерфейс Document
     private class Invoice implements Document {
-        private String number;
-        private LocalDate date;
-        private String type;
+        private final String number;
+        private final LocalDate date;
+        private final String type;
         private String supplier;
         private String fromWarehouse;
         private String toWarehouse;
         private String basis;
-        private Map<String, Integer> items;
+        private final Map<String, Integer> items;
 
         public Invoice(String number, LocalDate date, String type) {
             this.number = number;
@@ -197,34 +323,70 @@ public class WarehouseSystem implements WarehouseManager {
             this.items = new HashMap<>();
         }
 
-        @Override
-        public void setSupplier(String supplier) { this.supplier = supplier; }
-        @Override
-        public void setFromWarehouse(String warehouse) { this.fromWarehouse = warehouse; }
-        @Override
-        public void setToWarehouse(String warehouse) { this.toWarehouse = warehouse; }
-        @Override
-        public void setBasis(String basis) { this.basis = basis; }
+        private void setSupplier(String supplier) {
+            this.supplier = supplier;
+        }
+
+        private void setFromWarehouse(String warehouse) {
+            this.fromWarehouse = warehouse;
+        }
+
+        private void setToWarehouse(String warehouse) {
+            this.toWarehouse = warehouse;
+        }
+
+        private void setBasis(String basis) {
+            this.basis = basis;
+        }
 
         @Override
-        public String getSupplier() { return supplier; }
+        public String getSupplier() {
+            return supplier;
+        }
+
         @Override
-        public String getFromWarehouse() { return fromWarehouse; }
+        public String getFromWarehouse() {
+            return fromWarehouse;
+        }
+
         @Override
-        public String getToWarehouse() { return toWarehouse; }
+        public String getToWarehouse() {
+            return toWarehouse;
+        }
+
         @Override
-        public String getNumber() { return number; }
+        public String getNumber() {
+            return number;
+        }
+
         @Override
-        public LocalDate getDate() { return date; }
+        public LocalDate getDate() {
+            return date;
+        }
+
         @Override
-        public String getType() { return type; }
+        public String getType() {
+            return type;
+        }
+
         @Override
-        public String getBasis() { return basis; }
+        public String getBasis() {
+            return basis;
+        }
+
         @Override
-        public Map<String, Integer> getItems() { return new HashMap<>(items); }
+        public Map<String, Integer> getItems() {
+            return Collections.unmodifiableMap(items);
+        }
 
         @Override
         public void addItem(String product, int quantity) {
+            if (product == null || product.trim().isEmpty()) {
+                throw new IllegalArgumentException("Название товара не может быть пустым");
+            }
+            if (quantity <= 0) {
+                throw new IllegalArgumentException("Количество товара должно быть положительным");
+            }
             items.put(product, items.getOrDefault(product, 0) + quantity);
         }
 

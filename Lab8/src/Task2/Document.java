@@ -13,10 +13,5 @@ public interface Document {
     String getSupplier();
     String getFromWarehouse();
     String getToWarehouse();
-    void setSupplier(String supplier);
-    void setFromWarehouse(String warehouse);
-    void setToWarehouse(String warehouse);
-    void setBasis(String basis);
     void addItem(String product, int quantity);
-    String toString();
 }
