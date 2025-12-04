@@ -23,7 +23,6 @@ public class Task01 {
         MyArrayList<Double> doubleList = new MyArrayList<>(3);
         System.out.println("Double список создан: size = " + doubleList.getSize());
 
-        // Обработка исключений
         try {
             MyArrayList<Object> invalidList = new MyArrayList<>(-1);
         } catch (IllegalArgumentException e) {

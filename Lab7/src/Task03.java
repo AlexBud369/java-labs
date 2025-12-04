@@ -54,7 +54,6 @@ public class Task03 {
         list.clear();
         System.out.println("После clear(): [" + list + "]");
 
-        // Обработка исключений
         System.out.println("\nТестирование исключений:");
         try {
             list.popFront();

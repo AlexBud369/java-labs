@@ -45,7 +45,6 @@ public class Task04 {
         System.out.println("Клон: [" + cloned + "]");
         System.out.println("list.equals(cloned): " + list.equals(cloned));
 
-        // Обработка исключений
         System.out.println("\nТестирование исключений:");
         try {
             list.getElementAt(10);
