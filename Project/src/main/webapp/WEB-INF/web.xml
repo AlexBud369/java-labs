@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <!-- List Servlet -->
+    <servlet>
+        <servlet-name>ListVegetableServlet</servlet-name>
+        <servlet-class>org.example.servlets.ListVegetableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ListVegetableServlet</servlet-name>
+        <url-pattern>/veggies</url-pattern>
+    </servlet-mapping>
+
+    <!-- Add Servlet -->
+    <servlet>
+        <servlet-name>AddVegetableServlet</servlet-name>
+        <servlet-class>org.example.servlets.AddVegetableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddVegetableServlet</servlet-name>
+        <url-pattern>/add-vegetable</url-pattern>
+    </servlet-mapping>
+
+    <!-- Edit Servlet -->
+    <servlet>
+        <servlet-name>EditVegetableServlet</servlet-name>
+        <servlet-class>org.example.servlets.EditVegetableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EditVegetableServlet</servlet-name>
+        <url-pattern>/edit-vegetable</url-pattern>
+    </servlet-mapping>
+
+    <!-- Delete Servlet -->
+    <servlet>
+        <servlet-name>DeleteVegetableServlet</servlet-name>
+        <servlet-class>org.example.servlets.DeleteVegetableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteVegetableServlet</servlet-name>
+        <url-pattern>/delete-vegetable</url-pattern>
+    </servlet-mapping>
+
+    <!-- Welcome to file -->
+    <welcome-file-list>
+        <welcome-file>veggies</welcome-file>
+    </welcome-file-list>
+</web-app>
