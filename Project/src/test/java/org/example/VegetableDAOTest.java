@@ -2,6 +2,7 @@ package org.example;
 
 import org.junit.jupiter.api.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,11 +21,15 @@ class VegetableDAOTest {
 
     @BeforeEach
     void init() throws SQLException {
-        // Очищаем таблицу перед каждым тестом
-        try (var statement = testConnection.createStatement()) {
-            statement.execute("DELETE FROM Vegetables");
+        // Важно: не закрываем statement отдельно от соединения
+        // Просто очищаем таблицу
+        String sql = "DELETE FROM Vegetables";
+        try (PreparedStatement pstmt = testConnection.prepareStatement(sql)) {
+            pstmt.executeUpdate();
         }
-        vegetableDAO = new VegetableDAO(testConnection);  // Передай testConnection в конструктор DAO
+
+        // Создаем DAO с тестовым соединением
+        vegetableDAO = new VegetableDAO(testConnection);
     }
 
     @AfterAll
