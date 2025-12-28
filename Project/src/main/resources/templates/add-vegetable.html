@@ -1,93 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add New Vegetable</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        .form-card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .form-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .form-header h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 25px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        .btn-container {
-            display: flex;
-            gap: 15px;
-            margin-top: 40px;
-        }
-        .btn {
-            padding: 14px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            text-decoration: none;
-            text-align: center;
-        }
-        .btn-submit {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-        }
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-        }
-        .error {
-            color: red;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Добавить овощ</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="container">
-    <div class="form-card">
-        <div class="form-header">
-            <i class="fas fa-carrot" style="font-size: 3em; color: #764ba2;"></i>
+    <div class="card">
+        <a href="/" style="display: inline-block; margin-bottom: 20px; padding: 8px 15px; background: #f8f8f8; border-radius: 4px;">← На главную</a>
+
+        <div class="header">
             <h1>Добавить новый овощ</h1>
         </div>
 
@@ -95,20 +17,18 @@
 
         <form th:action="@{/veggies/add}" th:object="${vegetable}" method="post">
             <div class="form-group">
-                <label for="name">Name *</label>
-                <input type="text" id="name" th:field="*{name}" required placeholder="e.g., Carrot">
+                <label for="name">Название *</label>
+                <input type="text" id="name" th:field="*{name}" required placeholder="Например: Морковь">
             </div>
+
             <div class="form-group">
-                <label for="calories">Calories *</label>
-                <input type="number" id="calories" th:field="*{calories}" min="0" required>
+                <label for="calories">Калории *</label>
+                <input type="number" id="calories" th:field="*{calories}" min="0" required placeholder="0">
             </div>
-            <div class="btn-container">
-                <button type="submit" class="btn btn-submit">
-                    <i class="fas fa-plus-circle"></i> Добавить
-                </button>
-                <a th:href="@{/veggies}" class="btn btn-cancel">
-                    <i class="fas fa-times"></i> Отмена
-                </a>
+
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">Добавить овощ</button>
+                <a th:href="@{/veggies}" class="btn">Отмена</a>
             </div>
         </form>
     </div>

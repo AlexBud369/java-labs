@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vegetables Project - Главная</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <h1>Vegetables Project</h1>
+            <p>Spring Boot 3.3.5 • H2 Database • Thymeleaf • JPA/Hibernate</p>
+            <p>Статус: <strong>Работает</strong></p>
+        </div>
+
+        <div class="stats">
+            <h2>Статистика приложения</h2>
+            <div style="display: flex; gap: 30px; margin-top: 15px;">
+                <div>
+                    <h3 th:text="${veggiesCount}">0</h3>
+                    <p>Овощей в базе</p>
+                </div>
+                <div>
+                    <h3 th:text="${totalCalories}">0</h3>
+                    <p>Общая калорийность</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Быстрый старт</h2>
+        <div class="nav-bar">
+            <a href="/veggies" class="btn">Список овощей</a>
+            <a href="/veggies/add" class="btn">Добавить овощ</a>
+            <a href="/h2-console" target="_blank" class="btn">База данных</a>
+        </div>
+
+        <h3>Быстрые ссылки:</h3>
+        <div class="quick-links">
+            <a href="/veggies/sorted" class="quick-link">Сортировка по калориям</a>
+            <a href="/veggies?min=20&max=50" class="quick-link">Диапазон 20-50 калорий</a>
+            <a href="/veggies/range?min=0&max=100" class="quick-link">Поиск по диапазону</a>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f8f8f8; border-radius: 4px;">
+            <h3>Подключение к базе данных</h3>
+            <p>Для просмотра и управления базой данных используйте H2 Console:</p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>Откройте <a href="/h2-console" target="_blank">http://localhost:8080/h2-console</a></li>
+                <li>Настройки подключения:
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><strong>JDBC URL:</strong> jdbc:h2:mem:testdb</li>
+                        <li><strong>User Name:</strong> sa</li>
+                        <li><strong>Password:</strong> (оставьте пустым)</li>
+                    </ul>
+                </li>
+                <li>Нажмите Connect для подключения</li>
+            </ol>
+            <p style="margin-top: 10px;">После подключения выполните запрос <code>SELECT * FROM VEGETABLE;</code> для просмотра данных.</p>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+            <p>Разработано с использованием Spring Boot, H2 Database и Thymeleaf</p>
+            <p>Все CRUD операции доступны через <a href="/veggies">страницу управления овощами</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
