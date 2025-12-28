@@ -5,15 +5,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity  // Hibernate маппит на таблицу Vegetables
+@Entity
 public class Vegetable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Автоинкремент ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private int calories;
 
-    public Vegetable() {}  // Пустой конструктор для Hibernate
+    public Vegetable() {}
 
     public Vegetable(int id, String name, int calories) {
         this.id = id;
@@ -21,7 +21,6 @@ public class Vegetable {
         this.calories = calories;
     }
 
-    // Геттеры/сеттеры как раньше
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getName() { return name; }

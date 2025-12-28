@@ -32,8 +32,7 @@ public class VegetableController {
     @PostMapping("/add")
     public String addVegetable(@ModelAttribute Vegetable vegetable) {
         if (vegetable.getCalories() < 0) {
-            // Валидация (можно добавить redirect с ошибкой, но для простоты сохраняем как есть)
-            return "add-vegetable";  // Или добавьте flash-атрибут для ошибки
+            return "add-vegetable";
         }
         service.save(vegetable);
         return "redirect:/veggies";
