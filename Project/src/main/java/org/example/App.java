@@ -8,26 +8,21 @@ public class App
             System.out.println("Database location: " + DatabaseConnection.getDatabasePath());
             var vegetableDAO = new VegetableDAO();
 
-            // Создание таблицы
             DatabaseConnection.createTable();
 
-            // CREATE - добавление овощей
             System.out.println("=== CREATE VEGETABLES ===");
             vegetableDAO.create(new Vegetable(0, "Carrot", 41));
             vegetableDAO.create(new Vegetable(0, "Tomato", 18));
             vegetableDAO.create(new Vegetable(0, "Cucumber", 16));
 
-            // READ - получение всех овощей
             System.out.println("\n=== ALL VEGETABLES ===");
             List<Vegetable> all = vegetableDAO.readAll();
             all.forEach(System.out::println);
 
-            // READ - поиск по ID
             System.out.println("\n=== FIND VEGETABLE BY ID ===");
             Vegetable found = vegetableDAO.readById(1);  // Предполагаем ID=1 для Carrot
             System.out.println("Found: " + found);
 
-            // UPDATE - обновление овоща
             System.out.println("\n=== UPDATE VEGETABLE ===");
             Vegetable toUpdate = vegetableDAO.readById(2);  // Tomato
             if (toUpdate != null) {
@@ -35,19 +30,15 @@ public class App
                 vegetableDAO.update(updated);
             }
 
-            // Чтение после обновления
             System.out.println("\n=== VEGETABLES AFTER UPDATE ===");
             vegetableDAO.readAll().forEach(System.out::println);
 
-            // DELETE - удаление овоща
             System.out.println("\n=== DELETE VEGETABLE ===");
             vegetableDAO.delete(3);  // Cucumber
 
-            // Финальный список
             System.out.println("\n=== FINAL VEGETABLES LIST ===");
             vegetableDAO.readAll().forEach(System.out::println);
 
-            // Тематические операции
             System.out.println("\n=== SALAD CALORIES ===");
             System.out.println("Total salad calories: " + vegetableDAO.calculateSaladCalories());
 
@@ -59,7 +50,7 @@ public class App
             List<Vegetable> inRange = vegetableDAO.findByCaloriesRange(15, 25);
             inRange.forEach(System.out::println);
 
-            vegetableDAO.close();  // Если добавишь метод close в DAO для закрытия ресурсов
+            vegetableDAO.close();
 
         } catch (Exception e) {
             e.printStackTrace();

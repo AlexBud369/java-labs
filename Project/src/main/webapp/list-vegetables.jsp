@@ -55,9 +55,9 @@
         <a href="veggies?action=sort" class="action-link">Сортировать по калорийности</a>
 
         <!-- Сброс -->
-        <a href="veggies" class="action-link">Сброс сортировки/поиска</a>
+        <a href="veggies" class="action-link">Сброс сортировки</a>
 
-        <!-- Поиск по диапазону -->
+        <!-- Поиск по диапазону
         <form action="veggies?action=range" method="get">
             <div class="form-group">
                 <label>Min calories:</label>
@@ -68,7 +68,7 @@
                 <input type="number" name="max" value="25" min="0" required>
             </div>
             <button type="submit" class="btn">Поиск по диапазону</button>
-        </form>
+        </form>-->
 
         <!-- Добавление -->
         <a href="add-vegetable" class="btn">Добавить овощ</a>

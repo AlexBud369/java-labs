@@ -38,7 +38,7 @@ public class ListVegetableServlet extends HttpServlet {
                 }
                 if (min < 0 || max < 0 || min > max) {
                     request.setAttribute("error", "Диапазон калорийности должен быть положительным и min <= max.");
-                    veggies = dao.readAll();  // Показываем полный список при ошибке
+                    veggies = dao.readAll();
                 } else {
                     veggies = dao.findByCaloriesRange(min, max);
                     message = "Овощи в диапазоне " + min + "-" + max + " калорий";

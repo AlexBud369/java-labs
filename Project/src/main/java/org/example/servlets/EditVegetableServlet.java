@@ -48,7 +48,6 @@ public class EditVegetableServlet extends HttpServlet {
             response.sendRedirect("veggies");
         } catch (NumberFormatException e) {
             request.setAttribute("error", "Некорректное значение калорийности.");
-            // Можно добавить логику для восстановления данных, но для простоты форвард
             request.getRequestDispatcher("/edit-vegetable.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
